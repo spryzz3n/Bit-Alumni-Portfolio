@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS faculty;
+DROP TABLE IF EXISTS students;

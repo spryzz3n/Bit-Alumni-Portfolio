@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.env
+*.exe
+*.test
+server/bin/
+.vscode/
+
+# Planning docs
+*.docx
