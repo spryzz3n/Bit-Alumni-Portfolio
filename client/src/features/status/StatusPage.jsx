@@ -1,18 +1,14 @@
 import { useEffect, useState } from 'react'
 import { apiGet } from '../../lib/api'
 
-type State<T> =
-  | { kind: 'loading' }
-  | { kind: 'ok'; data: T }
-  | { kind: 'error'; message: string }
-
-function useApi<T>(path: string): State<T> {
-  const [state, setState] = useState<State<T>>({ kind: 'loading' })
+// state is one of: { kind: 'loading' } | { kind: 'ok', data } | { kind: 'error', message }
+function useApi(path) {
+  const [state, setState] = useState({ kind: 'loading' })
   useEffect(() => {
     let cancelled = false
-    apiGet<T>(path)
+    apiGet(path)
       .then((data) => !cancelled && setState({ kind: 'ok', data }))
-      .catch((e: Error) => !cancelled && setState({ kind: 'error', message: e.message }))
+      .catch((e) => !cancelled && setState({ kind: 'error', message: e.message }))
     return () => {
       cancelled = true
     }
@@ -20,7 +16,7 @@ function useApi<T>(path: string): State<T> {
   return state
 }
 
-function Card<T>({ title, state }: { title: string; state: State<T> }) {
+function Card({ title, state }) {
   return (
     <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
       <h2 className="text-sm font-medium text-slate-500">{title}</h2>
@@ -36,8 +32,8 @@ function Card<T>({ title, state }: { title: string; state: State<T> }) {
 }
 
 export default function StatusPage() {
-  const health = useApi<{ status: string }>('/health')
-  const db = useApi<{ status: string; app_name: string }>('/db-check')
+  const health = useApi('/health')
+  const db = useApi('/db-check')
   return (
     <main className="mx-auto max-w-xl space-y-4 p-6">
       <h1 className="text-2xl font-semibold text-slate-900">Alumni Portal</h1>
